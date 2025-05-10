@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мой список дел</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6;
+        }
+        .container {
+            width: 80%;
+            margin: 20px auto;
+        }
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+        }
+        .task {
+            background-color: #ffffff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        .task.completed {
+            text-decoration: line-through;
+            background-color: #e0e0e0;
+        }
+        .task button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+        .task button:hover {
+            background-color: #45a049;
+        }
+        .task button.delete {
+            background-color: #f44336;
+        }
+        .task button.delete:hover {
+            background-color: #d32f2f;
+        }
+        form input, form textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 3px;
+            border: 1px solid #ccc;
+        }
+        form button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        form button:hover {
+            background-color: #45a049;
+        }
+        .task-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .task-actions span {
+            color: gray;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Мой список дел</h1>
+        
+        <form method="POST" action="/add">
+            <input type="text" name="title" placeholder="Название задачи" required><br>
+            <textarea name="description" placeholder="Описание задачи"></textarea><br>
+            <input type="date" name="due_date"><br>
+
+            <label for="repeat">Повторение:</label>
+            <select name="repeat" id="repeat">
+                <option value="">Без повторения</option>
+                <option value="daily">Ежедневно</option>
+                <option value="weekly">Еженедельно</option>
+                <option value="monthly">Ежемесячно</option>
+            </select><br>
+            
+            <label for="repeat_interval">Интервал повторения:</label>
+            <input type="number" name="repeat_interval" placeholder="Число дней/недель/месяцев"><br>
+
+            <button type="submit">Добавить задачу</button>
+        </form>
+
+        <div class="task-list">
+            {% for task in tasks %}
+                <div class="task {% if task[3] == 1 %}completed{% endif %}">
+                    <div class="task-actions">
+                        <span>{{ task[1] }}</span>
+                        <div>
+                            <a href="{{ '/uncomplete/' ~ task[0] if task[3] == 1 else '/complete/' ~ task[0] }}">
+                              <button>
+                                  {% if task[3] == 1 %}
+                                      Снять выполнение
+                                  {% else %}
+                                      Пометить как выполненную
+                                  {% endif %}
+                              </button>
+                          </a>
+                            <a href="/delete/{{ task[0] }}">
+                                <button class="delete">Удалить</button>
+                            </a>
+                        </div>
+                    </div>
+                    <p>{{ task[2] }}</p>
+                    <small>Дата выполнения: {{ task[5] }}</small><br>
+                    <small>Повторение: {{ task[6] if task[6] else 'Нет' }}</small>
+                </div>
+            {% endfor%}
+</div>
+</div>
+
+</body> </html>
